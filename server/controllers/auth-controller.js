@@ -1,4 +1,5 @@
 const User = require("../model/user-model");
+var bcrypt = require("bcryptjs");
 
 const home = async (req, res) => {
   try {
@@ -61,8 +62,29 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { phone, email, password } = req.body;
-    console.log(phone, email, password);
-    res.status(200).send(`Welcome ${email}`);
+    const userFromEmail = await User.findOne({ email });
+    const userFromPhone = await User.findOne({ phone });
+    const phoneOrMail = userFromEmail || userFromPhone;
+    if (phoneOrMail) {
+      const comparePassword = await phoneOrMail.comparePassword(password);
+      if (comparePassword) {
+        res.status(200).json({
+          msg: `Welcome ${phoneOrMail?.name}`,
+          token: await phoneOrMail.genrateToken(),
+          userID: phoneOrMail._id.toString(),
+        });
+      } else {
+        res.status(401).send("Invalid Credentials ");
+      }
+    } else {
+      res
+        .status(400)
+        .send(
+          `User not found with ${phone ? "phone " + phone : ""}${
+            phone && email ? " or " : ""
+          }${email ? "email " + email : ""}`
+        );
+    }
   } catch (error) {
     res.status(400).send(`${error}`);
   }

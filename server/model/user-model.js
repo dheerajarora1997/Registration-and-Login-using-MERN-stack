@@ -44,7 +44,7 @@ userSchema.pre("save", async function () {
   }
 });
 
-// jwt - JSON web token
+// jwt - JSON web token Genrate
 userSchema.methods.genrateToken = async function () {
   try {
     return jwt.sign(
@@ -64,7 +64,13 @@ userSchema.methods.genrateToken = async function () {
   }
 };
 
+// Pssword Compare
+
+userSchema.methods.comparePassword = async function (candidatePassword) {
+  return await bcrypt.compare(candidatePassword, this.password);
+};
+
 // define the  modal or the collection name
-const User = new mongoose.model("Record", userSchema);
+const User = new mongoose.model("User", userSchema);
 
 module.exports = User;
