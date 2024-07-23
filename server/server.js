@@ -6,7 +6,7 @@ const connectDB = require("./utils/db");
 const errorMiddleware = require("./middlewares/error-middleware");
 
 app.use(express.json());
-app.use("/api", router);
+// app.use("/api", router);
 
 // This is base url return
 app.get("/", (req, res) => {
