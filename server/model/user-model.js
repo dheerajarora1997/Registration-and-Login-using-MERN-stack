@@ -40,7 +40,12 @@ userSchema.pre("save", async function () {
     const hash_password = await bcrypt.hash(user.password, saltRound);
     user.password = hash_password;
   } catch (error) {
-    console.error(`Error in pre method ${error}`);
+    const err = {
+      status: 400,
+      message: `Error in pre method ${error}`,
+      extraMessage: "Backend issue found!",
+    };
+    next(err);
   }
 });
 
@@ -60,11 +65,16 @@ userSchema.methods.genrateToken = async function () {
       { expiresIn: "30d" }
     );
   } catch (error) {
-    console.error(`Error in genrateToken ${error}`);
+    const err = {
+      status: 400,
+      message: `Error in generate Token ${error}`,
+      extraMessage: "Backend issue found!",
+    };
+    next(err);
   }
 };
 
-// Pssword Compare
+// Password Compare
 
 userSchema.methods.comparePassword = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);

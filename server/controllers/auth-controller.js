@@ -1,12 +1,15 @@
 const User = require("../model/user-model");
-var bcrypt = require("bcryptjs");
 
 const home = async (req, res) => {
   try {
     res.status(200).send("This is the MERN Controller Page");
   } catch (error) {
-    console.error(error);
-    return new Error(error);
+    const err = {
+      status: 400,
+      message: error,
+      extraMessage: "Backend issue found!",
+    };
+    next(err);
   }
 };
 
@@ -14,8 +17,12 @@ const about = async (req, res) => {
   try {
     res.status(200).send("This is About Page");
   } catch (error) {
-    res.status(400).send("This is Error");
-    return new Error(error);
+    const err = {
+      status: 400,
+      message: error,
+      extraMessage: "Backend issue found!",
+    };
+    next(err);
   }
 };
 
@@ -24,8 +31,12 @@ const usersGet = async (req, res) => {
     const allUsers = await User.find({});
     res.status(200).send(allUsers);
   } catch (error) {
-    res.status(400).send("This is Error");
-    return new Error(error);
+    const err = {
+      status: 400,
+      message: error,
+      extraMessage: "Backend issue found!",
+    };
+    next(err);
   }
 };
 
@@ -55,8 +66,12 @@ const register = async (req, res) => {
       userID: userCreated._id.toString(),
     });
   } catch (error) {
-    res.status(400).json(`${error}`);
-    return new Error(error);
+    const err = {
+      status: 400,
+      message: error,
+      extraMessage: "Backend issue found!",
+    };
+    next(err);
   }
 };
 const login = async (req, res) => {
@@ -86,7 +101,12 @@ const login = async (req, res) => {
         );
     }
   } catch (error) {
-    res.status(400).send(`${error}`);
+    const err = {
+      status: 400,
+      message: error,
+      extraMessage: "Backend issue found!",
+    };
+    next(err);
   }
 };
 

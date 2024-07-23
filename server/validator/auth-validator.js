@@ -36,6 +36,8 @@ const registerSchema = z.object({
 });
 
 const loginSchema = z.object({
+  email: z.string().optional(),
+  phone: z.number().optional(),
   password: z
     .string({
       required_error: "password is required!",
