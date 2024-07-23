@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const authControllers = require("../controllers/auth-controller");
+const registerSchema = require("../validator/auth-validator");
+const validate = require("../middlewares/validate-middleware");
 
 // Mount Router
 // router.get("/", (req, res) => {
@@ -14,7 +16,9 @@ const authControllers = require("../controllers/auth-controller");
 router.route("/").get(authControllers.home);
 router.route("/about").get(authControllers.about);
 router.route("/allUsers").get(authControllers.usersGet);
-router.route("/register").post(authControllers.register);
+router
+  .route("/register")
+  .post(validate(registerSchema), authControllers.register);
 router.route("/login").post(authControllers.login);
 
 module.exports = router;
