@@ -4,8 +4,12 @@ const validate = (schema) => async (req, res, next) => {
     req.body = parseBody;
     next();
   } catch (error) {
-    console.log(error);
-    res.status(400).json({ error });
+    const err = {
+      status: 422,
+      message: error.issues,
+      extraMessage: "Backend issue found!",
+    };
+    next(err);
   }
 };
 

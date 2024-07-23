@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 const router = require("./Router/auth-router");
 const connectDB = require("./utils/db");
+const errorMiddleware = require("./middlewares/error-middleware");
 
 app.use(express.json());
 app.use("/api", router);
@@ -11,6 +12,8 @@ app.use("/api", router);
 app.get("/", (req, res) => {
   res.status(200).send("Welcome MERN ServerJS");
 });
+
+app.use(errorMiddleware);
 
 const PORT = 5000;
 connectDB().then(() => {

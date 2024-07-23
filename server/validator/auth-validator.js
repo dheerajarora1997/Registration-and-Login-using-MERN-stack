@@ -7,7 +7,7 @@ const registerSchema = z.object({
       required_error: "Name is required!",
     })
     .trim()
-    .min(3, { message: "Name must be alteast of 3" })
+    .min(3, { message: "Name must be at least of 3" })
     .max(45, { message: "Name must not be more then 45" }),
   phone: z
     .number({
@@ -22,7 +22,7 @@ const registerSchema = z.object({
       required_error: "email is required!",
     })
     .trim()
-    .min(3, { message: "email must be alteast of 5" })
+    .min(3, { message: "email must be at least of 5" })
     .max(125, { message: "email must not be more then 125" }),
   dateOfBirth: z.string({
     required_error: "dateOfBirth is required!",
@@ -32,7 +32,15 @@ const registerSchema = z.object({
       required_error: "password is required!",
     })
     .trim()
-    .min(8, { message: "password must be alteast of 8" }),
+    .min(8, { message: "password must be at least of 8" }),
 });
 
-module.exports = registerSchema;
+const loginSchema = z.object({
+  password: z
+    .string({
+      required_error: "password is required!",
+    })
+    .trim()
+    .min(8, { message: "password must be at least of 8" }),
+});
+module.exports = { registerSchema, loginSchema };
