@@ -1,4 +1,6 @@
 const User = require("../model/user-model");
+const Contact = require("../model/contact-model");
+const { response } = require("express");
 
 const home = async (req, res) => {
   try {
@@ -110,4 +112,48 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { home, about, usersGet, register, login };
+const contactRecords = async (req, res) => {
+  try {
+    const recordResponse = await Contact.find({});
+    res.status(200).json(recordResponse);
+  } catch (error) {
+    const err = {
+      status: 400,
+      message: error || "Unable to get Data!",
+    };
+    next(err);
+  }
+};
+const contact = async (req, res) => {
+  try {
+    const { name, email, phone, message } = req.body;
+    const messageCreated = await Contact.create({
+      name,
+      email,
+      phone,
+      message,
+      status: "Pending",
+    });
+    res.status(200).json({
+      msg: "Response Submitted Successfully.",
+      responseStatus: messageCreated?.status,
+    });
+  } catch (error) {
+    const err = {
+      status: 400,
+      message: error || "Error submitting form",
+      extraMessage: "Unable to submit Form",
+    };
+    next(err);
+  }
+};
+
+module.exports = {
+  home,
+  about,
+  usersGet,
+  register,
+  login,
+  contactRecords,
+  contact,
+};
