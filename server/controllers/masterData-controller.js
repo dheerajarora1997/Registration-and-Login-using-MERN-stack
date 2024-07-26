@@ -9,14 +9,13 @@ const getAllMasterData = async (req, res) => {
     const err = {
       status: 400,
       message: error,
-      extraMessage: "Backend issue found!",
+      extraMessage: "Backend issue getAllMasterData!",
     };
     next(err);
   }
 };
 
 const getMasterDataByKey = async (req, res) => {
-  console.log(req.query, "req.query", req.params);
   const { key } = req.params;
   const { parentCode } = req.query;
   try {
@@ -33,7 +32,35 @@ const getMasterDataByKey = async (req, res) => {
     const err = {
       status: 400,
       message: error,
-      extraMessage: "Backend issue found!",
+      extraMessage: "Backend issue getMasterDataByKey!",
+    };
+    next(err);
+  }
+};
+
+const postMasterData = async (req, res) => {
+  const { key, value, description, valueType, shortCode, parentCode } =
+    req.body;
+  try {
+    const TotalRecords = await MasterData.find({});
+    const masterCreate = MasterData.create({
+      key,
+      value,
+      description,
+      valueType,
+      shortCode,
+      parentCode,
+      id: `M${TotalRecords.length + 1}`,
+    });
+    res.status(201).json({
+      msg: "Data added successfully!",
+      id: masterCreate.id,
+    });
+  } catch (error) {
+    const err = {
+      status: 400,
+      msg: error,
+      extraMessage: `Backend Issue postMasterData !`,
     };
     next(err);
   }
@@ -42,4 +69,5 @@ const getMasterDataByKey = async (req, res) => {
 module.exports = {
   getAllMasterData,
   getMasterDataByKey,
+  postMasterData,
 };
