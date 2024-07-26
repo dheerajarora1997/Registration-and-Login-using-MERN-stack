@@ -3,12 +3,14 @@ const express = require("express");
 const app = express();
 const authRouter = require("./router/auth-router");
 const recordRouter = require("./router/record-router");
+const masterDataRouter = require("./router/masterData-router");
 const contactRouter = require("./router/contact-router");
 const connectDB = require("./utils/db");
 const errorMiddleware = require("./middlewares/error-middleware");
 
 app.use(express.json());
 app.use("/api", recordRouter);
+app.use("/api/masterData", masterDataRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/form", contactRouter);
 
