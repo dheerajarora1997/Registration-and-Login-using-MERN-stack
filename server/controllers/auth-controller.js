@@ -45,6 +45,7 @@ const usersGet = async (req, res) => {
 const register = async (req, res) => {
   try {
     const { name, phone, email, dateOfBirth, isAdmin, password } = req.body;
+    const TotalRecords = await User.find({});
     const userEmailExists = await User.findOne({ email });
     const userPhoneExists = await User.findOne({ phone });
     if (userEmailExists || userPhoneExists) {
@@ -61,6 +62,11 @@ const register = async (req, res) => {
       dateOfBirth,
       isAdmin,
       password,
+      userId: `u00${
+        TotalRecords?.length > 999
+          ? TotalRecords?.length + 1
+          : 999 + TotalRecords?.length
+      }`,
     });
     res.status(201).json({
       msg: userCreated,

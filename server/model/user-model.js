@@ -3,6 +3,10 @@ var bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const userSchema = new mongoose.Schema({
+  userId: {
+    type: String,
+    require: true,
+  },
   name: {
     type: String,
     require: true,
@@ -54,7 +58,7 @@ userSchema.methods.genrateToken = async function () {
   try {
     return jwt.sign(
       {
-        userId: this._id.toString(),
+        userId: this.userId,
         name: this.name,
         phone: this.phone,
         email: this.email,
