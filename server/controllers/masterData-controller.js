@@ -1,9 +1,9 @@
 const MasterData = require("../model/masterData-modal");
-const { response } = require("express");
+const CounterId = require("../model/counter-modal");
+const { getNewId } = require("../utils");
 
-const getAllMasterData = async (req, res) => {
+const getAllMasterData = async (req, res, next) => {
   try {
-    console.log(req.query, "req.query");
     const allMasterData = await MasterData.find({});
     res.status(200).send(allMasterData);
   } catch (error) {
@@ -16,7 +16,7 @@ const getAllMasterData = async (req, res) => {
   }
 };
 
-const getMasterDataByKey = async (req, res) => {
+const getMasterDataByKey = async (req, res, next) => {
   const { key } = req.params;
   const { search, limit = 10, offset = 0, sort = "_id" } = req.query;
   console.log(req.query, "req.query");
@@ -50,35 +50,52 @@ const getMasterDataByKey = async (req, res) => {
   }
 };
 
-const postMasterData = async (req, res) => {
+const postMasterData = async (req, res, next) => {
   const { key, value, description, valueType, shortCode, parentCode } =
     req.body;
+
   try {
-    const TotalRecords = await MasterData.find({});
-    const masterCreate = MasterData.create({
+    // Fetch the current counter document
+    const totalCount = await CounterId.findOne();
+    if (!totalCount) {
+      throw new Error("CounterId document not found");
+    }
+
+    // Generate new masterId
+    let newMasterId = await getNewId("masterId", totalCount);
+
+    // Create a new master data document
+    const masterCreate = await MasterData.create({
       key,
       value,
       description,
       valueType,
       shortCode,
       parentCode,
-      id: `M${TotalRecords.length + 1}`,
+      id: newMasterId,
     });
+
+    // Update the masterId in the counter document
+    totalCount.masterId = newMasterId;
+    await totalCount.save();
+
+    // Send a success response
     res.status(201).json({
-      msg: "Data added successfully!",
+      msg: `Data added successfully! ${masterCreate.id}`,
       id: masterCreate.id,
     });
   } catch (error) {
+    // Handle errors
     const err = {
       status: 400,
-      msg: error,
-      extraMessage: `Backend Issue postMasterData !`,
+      msg: error.message,
+      extraMessage: `Backend Issue postMasterData!`,
     };
     next(err);
   }
 };
 
-const patchMasterData = async (req, res) => {
+const patchMasterData = async (req, res, next) => {
   const { id } = req.params;
   const { key, value, description, valueType, shortCode, parentCode } =
     req.body;

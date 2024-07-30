@@ -4,7 +4,6 @@ const MasterDataSchema = new Schema({
   id: {
     type: String,
   },
-
   key: {
     type: String,
     require: true,
