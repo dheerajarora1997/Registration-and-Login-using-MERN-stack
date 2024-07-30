@@ -19,7 +19,6 @@ const getAllMasterData = async (req, res, next) => {
 const getMasterDataByKey = async (req, res, next) => {
   const { key } = req.params;
   const { search, limit = 10, offset = 0, sort = "_id" } = req.query;
-  console.log(req.query, "req.query");
   try {
     const query = { ...req.query };
     delete query.offset;
@@ -34,7 +33,6 @@ const getMasterDataByKey = async (req, res, next) => {
     }
     if (limit) {
     }
-    console.log(query, "query");
     const resultMasterData = await MasterData.find(query)
       .limit(limit || 10)
       .skip(offset || 0)
@@ -75,11 +73,9 @@ const postMasterData = async (req, res, next) => {
       id: newMasterId,
     });
 
-    // Update the masterId in the counter document
     totalCount.masterId = newMasterId;
     await totalCount.save();
 
-    // Send a success response
     res.status(201).json({
       msg: `Data added successfully! ${masterCreate.id}`,
       id: masterCreate.id,
@@ -127,9 +123,37 @@ const patchMasterData = async (req, res, next) => {
   }
 };
 
+const deleteMasterData = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    // const deletedData = await MasterData.findByIdAndDelete(id);
+    const deletedData = await MasterData.deleteOne({ id });
+
+    if (!deletedData) {
+      return res.status(404).json({
+        msg: `No data found with ID: ${id}`,
+      });
+    }
+
+    res.status(200).json({
+      msg: `Data with ID: ${id} deleted successfully!`,
+      id: deletedData.id,
+    });
+  } catch (error) {
+    // Handle errors
+    const err = {
+      status: 400,
+      msg: error.message,
+      extraMessage: `Backend Issue deleteMasterData!`,
+    };
+    next(err);
+  }
+};
+
 module.exports = {
   getAllMasterData,
   getMasterDataByKey,
   postMasterData,
   patchMasterData,
+  deleteMasterData,
 };

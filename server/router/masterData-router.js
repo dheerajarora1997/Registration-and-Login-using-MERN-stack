@@ -6,5 +6,6 @@ router.route("/").get(MasterDataControllers.getAllMasterData);
 router.route("/:key").get(MasterDataControllers.getMasterDataByKey);
 router.route("/").post(MasterDataControllers.postMasterData);
 router.route("/:id").patch(MasterDataControllers.patchMasterData);
+router.route("/:id").delete(MasterDataControllers.deleteMasterData);
 
 module.exports = router;
