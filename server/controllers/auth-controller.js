@@ -15,19 +15,6 @@ const home = async (req, res) => {
   }
 };
 
-const about = async (req, res) => {
-  try {
-    res.status(200).send("This is About Page");
-  } catch (error) {
-    const err = {
-      status: 400,
-      message: error,
-      extraMessage: "Backend issue found!",
-    };
-    next(err);
-  }
-};
-
 const usersGet = async (req, res) => {
   try {
     const allUsers = await User.find({});
