@@ -143,7 +143,6 @@ const contact = async (req, res) => {
 
 module.exports = {
   home,
-  about,
   usersGet,
   register,
   login,
